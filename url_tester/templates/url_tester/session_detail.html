@@ -1,0 +1,23 @@
+{% extends 'url_tester/base.html' %}
+{% block content %}
+
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4">{{ session.title }}</h1>
+            <p class="lead">{{ session.description }}</p>
+            <p class="small">{{ session.date }}</p>
+        </div>
+    </div>
+    <div class="list-group">
+        {% for url in session.urls.all %}
+
+            <a href="{{ url.link }}" target="_blank"
+               class="list-group-item list-group-item-action list-group-item-{{ url.status }}">{{ url.link }}
+                <span class="badge badge-secondary">{{ url.code }}</span>
+            </a>
+
+        {% endfor %}
+
+    </div>
+
+{% endblock %}
