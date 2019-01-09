@@ -7,10 +7,10 @@ def status_color_code(code):
     if not code:
         return 'default'
 
-    if code == 200:
+    if code == '200':
         return 'success'
 
-    if code == 301:
+    if code == '301':
         return 'warning'
 
     return 'danger'

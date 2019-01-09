@@ -1,15 +1,16 @@
 import xmltodict
+import requests
 from urllib.request import urlopen
-from django.shortcuts import render
 from django.views.generic import View, ListView
 from django.views.generic.detail import DetailView
-from .models import Session, URL, SessionURLS
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from .models import Session, URL
+from django.views.generic.edit import CreateView, DeleteView
 from .forms import SessionForm, SessionFormDelete, SessionURLForm
 from django.utils import timezone
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, get_object_or_404
+from multiprocessing import Process
 
 
 class SessionsListView(ListView):
@@ -95,7 +96,6 @@ class SessionLoadUrl(CreateView):
         data = xmltodict.parse(data)
         url_obj = []
         for d in data['urlset']['url']:
-
             url = URL.objects.create()
             url.link = str(d['loc'])
             url.save()
@@ -110,3 +110,31 @@ class SessionLoadUrl(CreateView):
             self.object.save()
             self.object.urls.set(self.loadURLS(self.object.url_load))
             return HttpResponseRedirect(self.get_success_url())
+
+
+class RunTests(View):
+    template_name = 'url_tester/sessions_list.html'
+
+    def get_object_session(self):
+        return get_object_or_404(Session, pk=self.kwargs.get('pk'))
+
+    @staticmethod
+    def run(session_obj):
+        print('hei')
+        # for url in session_obj.urls.all()[:20]:
+        #     r = requests.head(url.link)
+        #     url.code = r.status_code
+        #     url.save()
+
+    def get(self, request, *args, **kwargs):
+        self.session = self.get_object_session()
+        # p = Process(target=RunTests.run, args=(self.session,))
+        # p.start()
+        # # p.join()
+
+        for url in self.session.urls.all():
+            r = requests.head(url.link)
+            url.code = r.status_code
+            url.save()
+
+        return render(request, self.template_name)
