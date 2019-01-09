@@ -1,4 +1,5 @@
 {% extends 'url_tester/base.html' %}
+{% load custom_tags %}
 {% block content %}
 
     <div class="jumbotron jumbotron-fluid">
@@ -8,12 +9,34 @@
             <p class="small">{{ session.date }}</p>
         </div>
     </div>
+
+    <hr class="primary">
+
+    <div class="row">
+
+        <div class="col-lg-2">
+            <div class="btn-group btn-group-md" role="group" aria-label="Actions">
+                <a href="{% url 'sessions_list' %}" class="btn btn-primary"> <i class="fas fa-home"
+                                                                                aria-hidden="true"></i> Home</a>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="btn-group btn-group-md" role="group" aria-label="Actions">
+                <a href="{% url 'session_load' pk=session.pk %}" class="btn btn-secondary"> <i class="fas fa-upload"
+                                                                                               aria-hidden="true"></i>
+                    Load Sitemap</a>
+            </div>
+        </div>
+
+
+    </div>
+    <br>
+
     <div class="list-group">
         {% for url in session.urls.all %}
-
             <a href="{{ url.link }}" target="_blank"
-               class="list-group-item list-group-item-action list-group-item-{{ url.status }}">{{ url.link }}
-                <span class="badge badge-secondary">{{ url.code }}</span>
+               class="list-group-item list-group-item-action list-group-item-{% status_color_code url.session_url.through.code %}">{{ url.link }}
+               {%  if url.session_url.through.code %} <span class="badge badge-secondary">{{ url.session_url.through.code }}</span> {% endif %}
             </a>
 
         {% endfor %}

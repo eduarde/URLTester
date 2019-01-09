@@ -4,15 +4,34 @@
     <div class="list-group">
 
         {% for session in sessions %}
-            <a href="{{ session.get_absolute_url }}" class="list-group-item list-group-item-action active">
+            <a href="{{ session.get_absolute_url }}" class="list-group-item list-group-item-action">
                 <div class="d-flex w-100 justify-content-between">
                     <h5 class="mb-1">{{ session.title }}</h5>
                     <small>{{ session.date }}</small>
                 </div>
                 <p class="mb-1">{{ session.description }}</p>
             </a>
+            <small><a href="{% url 'session_delete' pk=session.pk %}" class="cardbtn-item"><i
+                    class="fa fa-trash"></i></a></small> <br>
         {% endfor %}
 
     </div>
+
+    <hr class="primary">
+    <br/><br/>
+
+    <div class="row">
+
+        <div class="col-lg-8 mx-auto text-center">
+            <div class="btn-group btn-group-md" role="group" aria-label="Actions">
+                <a href="{% url 'session_create' %}" class="btn btn-danger"> <i class="fa fa-plus"
+                                                                                aria-hidden="true"></i> Session</a>
+
+            </div>
+        </div>
+
+    </div>
+
+
 
 {% endblock %}

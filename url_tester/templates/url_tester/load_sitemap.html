@@ -1,0 +1,27 @@
+{% extends 'url_tester/base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+
+    <section class="bg-gray-light" id="delete">
+        <div class="container">
+            <h2 class="text-center"><span class="badge badge-info">UPLOAD SITEMAP</span></h2> <br/><br/>
+            <hr class="primary">
+            <br/>
+            <div class="row">
+
+                <div class="col-12 mx-auto ">
+                    <form action="" method="post">
+                        {% csrf_token %} {{ form|crispy }} <br />
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                        <button onclick="window.history.back();" class="btn btn-secondary">Cancel</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+{% endblock %}
