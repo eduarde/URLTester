@@ -11,6 +11,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, get_object_or_404
 from multiprocessing import Process
+import threading
 
 
 class SessionsListView(ListView):
@@ -29,6 +30,13 @@ class SessionDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
+
+        context['total_urls'] = len(self.object.urls.all())
+        context['total_200'] = len([x for x in self.object.urls.all() if x.code == '200'])
+        context['total_301'] = len([x for x in self.object.urls.all() if x.code == '301'])
+        context['total_302'] = len([x for x in self.object.urls.all() if x.code == '302'])
+        context['total_404'] = len([x for x in self.object.urls.all() if x.code == '404'])
+        context['total_500'] = len([x for x in self.object.urls.all() if x.code == '500'])
         return context
 
 
@@ -118,23 +126,21 @@ class RunTests(View):
     def get_object_session(self):
         return get_object_or_404(Session, pk=self.kwargs.get('pk'))
 
+    def get_success_url(self, **kwargs):
+        return reverse('session_detail', kwargs={'pk': self.kwargs.get('pk')})
+
     @staticmethod
     def run(session_obj):
-        print('hei')
-        # for url in session_obj.urls.all()[:20]:
-        #     r = requests.head(url.link)
-        #     url.code = r.status_code
-        #     url.save()
-
-    def get(self, request, *args, **kwargs):
-        self.session = self.get_object_session()
-        # p = Process(target=RunTests.run, args=(self.session,))
-        # p.start()
-        # # p.join()
-
-        for url in self.session.urls.all():
+        session_obj.loaded = False
+        for url in session_obj.urls.all():
             r = requests.head(url.link)
             url.code = r.status_code
             url.save()
+        session_obj.loaded = True
+        session_obj.save()
 
-        return render(request, self.template_name)
+    def get(self, request, *args, **kwargs):
+        self.session = self.get_object_session()
+        thr = threading.Thread(target=RunTests.run, args=(self.session,))
+        thr.start()
+        return HttpResponseRedirect(self.get_success_url())

@@ -8,6 +8,7 @@ class Session(models.Model):
     date = models.DateTimeField(blank=True, null=True)
     urls = models.ManyToManyField('URL', related_name='session_url')
     url_load = models.URLField(blank=True, null=True)
+    loaded = models.BooleanField(blank=True, default=False)
 
     def get_absolute_url(self):
         return reverse('session_detail', args=[self.pk])
