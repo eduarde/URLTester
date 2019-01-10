@@ -3,12 +3,13 @@ from django.urls import reverse
 
 
 class Session(models.Model):
-    title = models.CharField(max_length=400)
-    description = models.TextField()
+    title = models.CharField(verbose_name='Title', max_length=400)
+    description = models.TextField(verbose_name='Description')
     date = models.DateTimeField(blank=True, null=True)
     urls = models.ManyToManyField('URL', related_name='session_url')
-    url_load = models.URLField(blank=True, null=True)
+    url_load = models.URLField(verbose_name='URL to load', blank=True, null=True)
     loaded = models.BooleanField(blank=True, default=False)
+    type = models.CharField(verbose_name='Type', max_length=400, blank=True, null=True)
 
     def get_absolute_url(self):
         return reverse('session_detail', args=[self.pk])

@@ -10,7 +10,6 @@ from django.utils import timezone
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, get_object_or_404
-from multiprocessing import Process
 import threading
 
 
@@ -20,7 +19,7 @@ class SessionsListView(ListView):
     template_name = 'url_tester/sessions_list.html'
 
     def get_queryset(self):
-        return Session.objects.all().order_by('date')
+        return Session.objects.all().order_by('-date')
 
 
 class SessionDetailView(DetailView):
