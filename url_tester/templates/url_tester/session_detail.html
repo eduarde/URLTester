@@ -12,14 +12,12 @@
             <blockquote class="blockquote mb-0">
                 <p>{{ session.description }}</p>
                 <hr class="primary">
-                <div class="stats">
-                    {% if total_urls %}<p><small>total</small><span class="badge badge-secondary float-right">{{ total_urls }}</span></p>{% endif %}
-                   {% if total_200 %} <p><small>200</small> <span class="badge badge-success float-right">{{ total_200 }}</span></p>{% endif %}
-                    {% if total_301 %}<p><small>301</small> <span class="badge badge-warning float-right">{{ total_301 }}</span></p>{% endif %}
-                    {% if total_302 %}<p><small>302</small> <span class="badge badge-warning float-right">{{ total_302 }}</span></p>{% endif %}
-                    {% if total_404 %}<p><small>404</small> <span class="badge badge-danger float-right">{{ total_404 }}</span></p>{% endif %}
-                    {% if total_500 %}<p><small>500</small> <span class="badge badge-danger float-right">{{ total_500 }}</span></p>{% endif %}
-                </div>
+                {% if total_urls %}<button type="button" class="btn btn-default">total <span class="badge badge-info">{{ total_urls }}</span></button>{% endif %}
+                {% if total_200 %}<button type="button" class="btn btn-default">200 <span class="badge badge-success">{{ total_200 }}</span></button>{% endif %}
+                {% if total_301 %}<button type="button" class="btn btn-default">301 <span class="badge badge-warning">{{ total_301 }}</span></button>{% endif %}
+                {% if total_302 %}<button type="button" class="btn btn-default">302 <span class="badge badge-warning">{{ total_302 }}</span></button>{% endif %}
+                {% if total_404 %}<button type="button" class="btn btn-default">404 <span class="badge badge-danger">{{ total_404 }}</span></button>{% endif %}
+                {% if total_500 %}<button type="button" class="btn btn-default">500 <span class="badge badge-danger">{{ total_500 }}</span></button>{% endif %}
                 <footer>
                     <div class="progress">
                         <div class="progress-bar progress-bar-striped bg-{% if session.loaded %}success{% else %}danger{% endif %}"
