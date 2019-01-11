@@ -37,7 +37,6 @@ class Session(models.Model):
     date = models.DateTimeField(blank=True, null=True)
     urls = models.ManyToManyField('URL', related_name='session_url')
     url_load = models.URLField(verbose_name='URL to load', blank=True, null=True)
-    loaded = models.BooleanField(blank=True, default=False)
     category = models.ForeignKey('Category', related_name='session_category', on_delete=models.SET_NULL, null=True)
     project = models.ForeignKey('Project', related_name='session_project', on_delete=models.CASCADE)
     slug = models.SlugField(max_length=100, unique=True, blank=True, default=uuid.uuid1)
@@ -45,6 +44,20 @@ class Session(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify('{0} {1}'.format(self.title, self.category.name))
         super(Session, self).save(*args, **kwargs)
+
+    def progress_bar_count(self):
+        c = 0
+        urls = self.urls.all()
+        calc = 0
+
+        for url in urls:
+            if url.code:
+                c += 1
+
+        if len(urls):
+            calc = c * 100 / len(self.urls.all())
+
+        return calc
 
     def get_absolute_url(self):
         return reverse('session_detail', kwargs={'proj': self.project.slug, 'slug': self.slug})

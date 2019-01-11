@@ -11,6 +11,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, get_object_or_404
 import threading
+import time
 
 
 class HomeView(ListView):
@@ -163,13 +164,14 @@ class RunTests(View):
 
     @staticmethod
     def run(session_obj):
-        session_obj.loaded = False
         for url in session_obj.urls.all():
-            r = requests.head(url.link)
-            url.code = r.status_code
-            url.save()
-        session_obj.loaded = True
-        session_obj.save()
+            try:
+                r = requests.head(url.link)
+                url.code = r.status_code
+                url.save()
+                session_obj.save()
+            except ConnectionError:
+                pass
 
     def get(self, request, *args, **kwargs):
         self.session = self.get_object_session()

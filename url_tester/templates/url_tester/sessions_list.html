@@ -41,9 +41,10 @@
                 <a href="{{ session.get_absolute_url }}" class="btn btn-primary">Open</a><br>
                 <hr class="primary">
                 <div class="progress">
-                    <div class="progress-bar progress-bar-striped bg-{% if session.loaded %}success{% else %}danger{% endif %}"
-                         role="progressbar" style="width: {% if session.loaded %}100%{% else %}1%{% endif %}"
-                         aria-valuenow="25"
+                    <div class="progress-bar progress-bar-striped bg-success"
+                         role="progressbar"
+                         style="width: {{ session.progress_bar_count }}%"
+                         aria-valuenow="{{ session.progress_bar_count }}"
                          aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
             </div>

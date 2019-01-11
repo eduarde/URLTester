@@ -36,12 +36,13 @@
                     <button type="button" class="btn btn-default">500 <span
                             class="badge badge-danger">{{ total_500 }}</span></button>{% endif %}
                 <footer>
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-striped bg-{% if session.loaded %}success{% else %}danger{% endif %}"
-                             role="progressbar" style="width: {% if session.loaded %}100%{% else %}1%{% endif %}"
-                             aria-valuenow="25"
-                             aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
+                   <div class="progress">
+                    <div class="progress-bar progress-bar-striped bg-success"
+                         role="progressbar"
+                         style="width: {{ session.progress_bar_count }}%"
+                         aria-valuenow="{{ session.progress_bar_count }}"
+                         aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
                 </footer>
             </blockquote>
         </div>
@@ -56,16 +57,19 @@
            class="btn btn-secondary"><i
                 class="fas fa-home"
                 aria-hidden="true"></i> Home</a>
-        <a href="{% url 'session_load' proj=session.project.slug session=session.slug %}" class="btn btn-secondary"><i
+        <a id='load' data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom"
+           data-content="Load a sitemap"
+           href="{% url 'session_load' proj=session.project.slug session=session.slug %}" class="btn btn-secondary"><i
                 class="fas fa-upload"
                 aria-hidden="true"></i>
             Load</a>
-
-        {#        <a href="{% url 'session_run' pk=session.pk %}" data-toggle="modal" data-target="#testModal"#}
-        {#           class="btn btn-secondary">Run tests</a>#}
-
-        <a href="{% url 'session_run' proj=session.project.slug session=session.slug %}" class="btn btn-secondary"><i
+        <a id='runtest' data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom"
+           data-content="Tests will run in the background and it may take some time to complete all of them. Please
+                    check the progress bar."
+           href="{% url 'session_run' proj=session.project.slug session=session.slug %}"
+           class="btn btn-secondary {% if not session.urls.all %} disabled {% endif %}"><i
                 class="fas fa-bolt"></i> Tests</a>
+
     </div>
 
     <br><br>
@@ -80,29 +84,6 @@
 
         {% endfor %}
 
-    </div>
-
-
-    <!-- Modal -->
-    <div class="modal fade" id="testModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Tests started</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    Tests are running in the background and it may take some time to complete all the tests. Please
-                    check the progress bar.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
     </div>
 
 {% endblock %}
