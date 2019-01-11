@@ -3,9 +3,9 @@ import requests
 from urllib.request import urlopen
 from django.views.generic import View, ListView
 from django.views.generic.detail import DetailView
-from .models import Session, URL, Category
+from .models import Session, URL, Category, Project
 from django.views.generic.edit import CreateView, DeleteView
-from .forms import SessionForm, SessionFormDelete, SessionURLForm
+from .forms import SessionForm, SessionFormDelete, SessionURLForm, ProjectForm
 from django.utils import timezone
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
@@ -13,19 +13,32 @@ from django.shortcuts import render, get_object_or_404
 import threading
 
 
+class HomeView(ListView):
+    model = Project
+    context_object_name = 'projects'
+    template_name = 'url_tester/home.html'
+
+
 class SessionsListView(ListView):
     model = Session
     context_object_name = 'sessions'
     template_name = 'url_tester/sessions_list.html'
 
+    def get_project(self):
+        return get_object_or_404(Project, slug=self.kwargs.get('proj'))
+
+    def get_category(self):
+        return get_object_or_404(Category, slug=self.kwargs.get('category'))
+
     def get_queryset(self):
+        proj = self.get_project()
         if self.kwargs.get('category') != 'all':
-            category = get_object_or_404(Category, slug=self.kwargs.get('category'))
-            return Session.objects.filter(category=category).order_by('-date')
-        return Session.objects.all().order_by('-date')
+            return Session.objects.filter(project=proj, category=self.get_category()).order_by('-date')
+        return Session.objects.filter(project=proj).order_by('-date')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data()
+        context['project'] = self.get_project()
         context['categories'] = Category.objects.all()
         context['page'] = self.kwargs.get('category')
         return context
@@ -51,33 +64,41 @@ class SessionDetailView(DetailView):
 class SessionCreateView(CreateView):
     model = Session
     template_name = 'url_tester/create_session.html'
-    success_url = reverse_lazy('sessions_list')
     form_class = SessionForm
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('sessions_list', kwargs=({'category': 'all', 'proj': self.kwargs.get('proj')}))
 
     def get(self, request, *args, **kwargs):
         form = self.form_class()
         return render(request, self.template_name, {'form': form})
 
+    def get_project(self):
+        return get_object_or_404(Project, slug=self.kwargs.get('proj'))
+
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if form.is_valid():
             self.object = form.save(commit=False)
+            self.object.project = self.get_project()
             self.object.date = timezone.now()
             self.object.save()
             form.save()
-            return HttpResponseRedirect(self.success_url)
+            return HttpResponseRedirect(self.get_success_url())
 
 
 class SessionDeleteView(DeleteView):
     template_name = 'url_tester/delete_session.html'
     form_class = SessionFormDelete
-    success_url = reverse_lazy('sessions_list')
 
     def get_object(self):
-        return get_object_or_404(Session, pk=self.kwargs.get('pk'))
+        return get_object_or_404(Session, slug=self.kwargs.get('session'))
+
+    def get_project(self):
+        return get_object_or_404(Project, slug=self.kwargs.get('proj'))
 
     def get_success_url(self, **kwargs):
-        return reverse('sessions_list', kwargs={'category': self.get_object().category.slug})
+        return reverse_lazy('sessions_list', kwargs=({'category': 'all', 'proj': self.kwargs.get('proj')}))
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -98,10 +119,11 @@ class SessionLoadUrl(CreateView):
     success_url = reverse_lazy('session_detail')
 
     def get_success_url(self, **kwargs):
-        return reverse('session_detail', kwargs={'pk': self.kwargs.get('pk')})
+        return reverse('session_detail',
+                       kwargs={'proj': self.kwargs.get('proj'), 'slug': self.kwargs.get('session')})
 
     def get_object(self):
-        return get_object_or_404(Session, pk=self.kwargs.get('pk'))
+        return get_object_or_404(Session, slug=self.kwargs.get('session'))
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -126,6 +148,7 @@ class SessionLoadUrl(CreateView):
         self.object = self.get_object()
         form = self.form_class(request.POST, instance=self.object)
         if form.is_valid():
+            self.object.date = timezone.now()
             self.object.save()
             self.object.urls.set(self.loadURLS(self.object.url_load))
             return HttpResponseRedirect(self.get_success_url())
@@ -135,10 +158,11 @@ class RunTests(View):
     template_name = 'url_tester/sessions_list.html'
 
     def get_object_session(self):
-        return get_object_or_404(Session, pk=self.kwargs.get('pk'))
+        return get_object_or_404(Session, slug=self.kwargs.get('session'))
 
     def get_success_url(self, **kwargs):
-        return reverse('session_detail', kwargs={'pk': self.kwargs.get('pk')})
+        return reverse_lazy('session_detail',
+                            kwargs={'proj': self.kwargs.get('proj'), 'slug': self.kwargs.get('session')})
 
     @staticmethod
     def run(session_obj):
@@ -155,3 +179,21 @@ class RunTests(View):
         thr = threading.Thread(target=RunTests.run, args=(self.session,))
         thr.start()
         return HttpResponseRedirect(self.get_success_url())
+
+
+class ProjectCreateView(CreateView):
+    model = Session
+    template_name = 'url_tester/create_project.html'
+    success_url = reverse_lazy('home')
+    form_class = ProjectForm
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            self.object = form.save(commit=True)
+            self.object.save()
+            return HttpResponseRedirect(self.success_url)

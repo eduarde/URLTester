@@ -2,19 +2,23 @@
 {% block content %}
 
 
-    <h1 class="text-center"><span class="badge badge-info">HOME</span></h1> <br/><br/>
+    <h1 class="text-center"><span class="badge badge-info">{{ project }}</span></h1> <br/><br/>
     <hr class="primary">
 
 
     <ul class="nav nav-pills">
         <li class="nav-item">
+            <a class="nav-link text-secondary"
+               href="{% url 'home' %}"><i class="fas fa-home"></i></a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link {% if page == 'all' %}active{% else %}text-secondary{% endif %}"
-               href="{% url 'sessions_list' category='all' %}">ALL</a>
+               href="{% url 'sessions_list' proj=project.slug category='all' %}">ALL</a>
         </li>
         {% for category in categories %}
             <li class="nav-item">
                 <a class="nav-link {% if page == category.slug %}active{% else %}text-secondary{% endif %}"
-                   href="{% url 'sessions_list' category=category.slug %}">{{ category.name }}</a>
+                   href="{% url 'sessions_list' proj=project.slug category=category.slug %}">{{ category.name }}</a>
             </li>
         {% endfor %}
     </ul>
@@ -22,7 +26,8 @@
 
     <div class="row" xmlns="http://www.w3.org/1999/html">
         <div class="col-lg-12 mx-auto text-center">
-            <h1><a href="{% url 'session_create' %}"> <i class="fas fa-plus text-secondary"></i></a></h1>
+            <h1><a href="{% url 'session_create' proj=project.slug %}"> <i class="fas fa-plus text-secondary"></i></a>
+            </h1>
         </div>
     </div>
     <br>
@@ -44,7 +49,8 @@
             </div>
             <div class="card-footer text-muted">
                 <small class="float-left">{{ session.date }}</small>
-                <span class="float-right"><a href="{% url 'session_delete' pk=session.pk %}" class="cardbtn-item"><i
+                <span class="float-right"><a href="{% url 'session_delete' proj=project.slug session=session.slug %}"
+                                             class="cardbtn-item"><i
                         class="fa fa-trash"></i></a></span>
                 <br>
             </div>

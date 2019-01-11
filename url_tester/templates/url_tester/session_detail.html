@@ -2,7 +2,11 @@
 {% load custom_tags %}
 {% block content %}
 
-    <h1 class="text-center"><span class="badge badge-info">SESSION: {{ session.title }}</span></h1><br/><br/>
+    <h1 class="text-center"><span class="badge badge-warning">{{ session.project }}</span></h1>
+    <h2 class="text-center"><span class="badge badge-info">SESSION: {{ session.title }}</span>
+        <small><span class="badge badge-danger"> {{ session.category }}</span></small>
+    </h2>
+    <h2 class="text-center"></h2><br/><br/><br/><br/>
     <hr class="primary"><br/><br/>
 
     <div class="card">
@@ -48,17 +52,20 @@
 
 
     <div class="btn-group btn-group-lg" role="group">
-        <a href="{% url 'sessions_list' category=session.category.slug %}" class="btn btn-secondary"><i
+        <a href="{% url 'sessions_list' proj=session.project.slug category=session.category.slug %}"
+           class="btn btn-secondary"><i
                 class="fas fa-home"
                 aria-hidden="true"></i> Home</a>
-        <a href="{% url 'session_load' pk=session.pk %}" class="btn btn-secondary"><i class="fas fa-upload"
-                                                                                      aria-hidden="true"></i>
+        <a href="{% url 'session_load' proj=session.project.slug session=session.slug %}" class="btn btn-secondary"><i
+                class="fas fa-upload"
+                aria-hidden="true"></i>
             Load</a>
 
         {#        <a href="{% url 'session_run' pk=session.pk %}" data-toggle="modal" data-target="#testModal"#}
         {#           class="btn btn-secondary">Run tests</a>#}
 
-        <a href="{% url 'session_run' pk=session.pk %}" class="btn btn-secondary"><i class="fas fa-bolt"></i> Tests</a>
+        <a href="{% url 'session_run' proj=session.project.slug session=session.slug %}" class="btn btn-secondary"><i
+                class="fas fa-bolt"></i> Tests</a>
     </div>
 
     <br><br>

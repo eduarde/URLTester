@@ -1,18 +1,32 @@
+import uuid
 from django.db import models
 from django.urls import reverse
 from django.template.defaultfilters import slugify
 
 
-class Category(models.Model):
+class BaseModel(models.Model):
     name = models.CharField(verbose_name='Name', max_length=100)
     slug = models.SlugField(max_length=100, unique=True, blank=True)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return self.name
+
+
+class Project(BaseModel):
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Project, self).save(*args, **kwargs)
+
+
+class Category(BaseModel):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super(Category, self).save(*args, **kwargs)
-
-    def __str__(self):
-        return self.name
 
 
 class Session(models.Model):
@@ -23,9 +37,15 @@ class Session(models.Model):
     url_load = models.URLField(verbose_name='URL to load', blank=True, null=True)
     loaded = models.BooleanField(blank=True, default=False)
     category = models.ForeignKey('Category', related_name='session_category', on_delete=models.SET_NULL, null=True)
+    project = models.ForeignKey('Project', related_name='session_project', on_delete=models.CASCADE)
+    slug = models.SlugField(max_length=100, unique=True, blank=True, default=uuid.uuid1)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super(Session, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('session_detail', args=[self.pk])
+        return reverse('session_detail', kwargs={'proj': self.project.slug, 'slug': self.slug})
 
     def __str__(self):
         return self.title
