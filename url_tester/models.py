@@ -16,6 +16,8 @@ class BaseModel(models.Model):
 
 
 class Project(BaseModel):
+    color = models.CharField(verbose_name='Color Code', max_length=7, null=True, blank=True,
+                             help_text='Add the desired color code. You can choose one from <a href="http://brand-colors.com/" target="_blank">here</a>')
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -41,14 +43,14 @@ class Session(models.Model):
     slug = models.SlugField(max_length=100, unique=True, blank=True, default=uuid.uuid1)
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
+        self.slug = slugify('{0} {1}'.format(self.title, self.category.name))
         super(Session, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('session_detail', kwargs={'proj': self.project.slug, 'slug': self.slug})
 
     def __str__(self):
-        return self.title
+        return '{0} - {1}'.format(self.title, self.category.name)
 
 
 class URL(models.Model):

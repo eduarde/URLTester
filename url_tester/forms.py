@@ -24,4 +24,4 @@ class SessionFormDelete(forms.ModelForm):
 class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = ('name',)
+        fields = ('name','color', )

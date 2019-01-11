@@ -6,7 +6,7 @@
 
     <div class="flex-row">
         {% for prj in projects %}
-            <a class="flex-card" href="{% url 'sessions_list' proj=prj.slug category='all' %}">
+            <a class="flex-card" style="background-color: {{ prj.color }}" href="{% url 'sessions_list' proj=prj.slug category='all' %}">
                 <div class=""><p>{{ prj }}</p></div>
             </a>
         {% endfor %}

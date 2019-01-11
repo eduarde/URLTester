@@ -130,19 +130,16 @@ class SessionLoadUrl(CreateView):
         form = self.form_class(instance=self.object)
         return render(request, self.template_name, {'form': form})
 
-    def loadURLS(self, url_to_load):
-        file = urlopen(url_to_load)
+    def loadURLS(self, object):
+        file = urlopen(object.url_load)
         data = file.read()
         file.close()
         data = xmltodict.parse(data)
-        url_obj = []
         for d in data['urlset']['url']:
-            url = URL.objects.create()
+            url = URL()
             url.link = str(d['loc'])
             url.save()
-            url_obj.append(url)
-
-        return url_obj
+            object.urls.add(url)
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -150,7 +147,7 @@ class SessionLoadUrl(CreateView):
         if form.is_valid():
             self.object.date = timezone.now()
             self.object.save()
-            self.object.urls.set(self.loadURLS(self.object.url_load))
+            self.loadURLS(self.object)
             return HttpResponseRedirect(self.get_success_url())
 
 
