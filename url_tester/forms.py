@@ -6,7 +6,7 @@ from .models import Session, Project
 class SessionForm(forms.ModelForm):
     class Meta:
         model = Session
-        fields = ('title', 'description', 'category', )
+        fields = ('title', 'description', 'category',)
 
 
 class SessionURLForm(forms.ModelForm):
@@ -24,4 +24,4 @@ class SessionFormDelete(forms.ModelForm):
 class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = ('name','color', )
+        fields = ('name', 'color',)

@@ -3,22 +3,19 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
-    <div class="container">
-        <h1 class="text-center"><span class="badge badge-info">CREATE NEW PROJECT</span></h1><br/><br/>
-        <hr class="primary">
-        <br/><br/>
-        <div class="row">
+    {% include 'url_tester/includes/page_title.html' with title='Create new project' %}
 
-            <div class="col-lg-12 mx-auto text-center">
-                <form action="" method="post">
-                    {% csrf_token %} {{ form|crispy }}
-                    <br/><br/>
-                    <button type="submit" class="btn btn-primary">Create</button>
-                    <button onclick="window.history.back();" class="btn btn-secondary">Cancel</button>
-                </form>
-            </div>
+    <div class="row">
 
+        <div class="col-lg-12 mx-auto text-center">
+            <form action="" method="post">
+                {% csrf_token %} {{ form|crispy }}
+                <br/><br/>
+                <button type="submit" class="btn btn-primary">Create</button>
+                <button onclick="window.history.back();" class="btn btn-secondary">Cancel</button>
+            </form>
         </div>
+
     </div>
 
 

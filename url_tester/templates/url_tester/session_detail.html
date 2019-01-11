@@ -2,11 +2,11 @@
 {% load custom_tags %}
 {% block content %}
 
-    <h1 class="text-center"><span class="badge badge-warning">{{ session.project }}</span></h1>
+    <h1 class="page-title-m text-center"><span class="badge badge-warning">{{ session.project }}</span></h1>
     <h2 class="text-center"><span class="badge badge-info">SESSION: {{ session.title }}</span>
         <small><span class="badge badge-danger"> {{ session.category }}</span></small>
     </h2>
-    <h2 class="text-center"></h2><br/><br/><br/><br/>
+    <br/><br/><br/><br/>
     <hr class="primary"><br/><br/>
 
     <div class="card">
@@ -36,13 +36,13 @@
                     <button type="button" class="btn btn-default">500 <span
                             class="badge badge-danger">{{ total_500 }}</span></button>{% endif %}
                 <footer>
-                   <div class="progress">
-                    <div class="progress-bar progress-bar-striped bg-success"
-                         role="progressbar"
-                         style="width: {{ session.progress_bar_count }}%"
-                         aria-valuenow="{{ session.progress_bar_count }}"
-                         aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped bg-success"
+                             role="progressbar"
+                             style="width: {{ session.progress_bar_count }}%"
+                             aria-valuenow="{{ session.progress_bar_count }}"
+                             aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
                 </footer>
             </blockquote>
         </div>

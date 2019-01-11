@@ -1,36 +1,36 @@
 {% extends 'url_tester/base.html' %}
 {% block content %}
 
+    {% include 'url_tester/includes/page_title.html' with title=project %}
 
-    <h1 class="text-center"><span class="badge badge-info">{{ project }}</span></h1> <br/><br/>
-    <hr class="primary">
-
-
-    <ul class="nav nav-pills">
-        <li class="nav-item">
-            <a class="nav-link text-secondary"
-               href="{% url 'home' %}"><i class="fas fa-home"></i></a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {% if page == 'all' %}active{% else %}text-secondary{% endif %}"
-               href="{% url 'sessions_list' proj=project.slug category='all' %}">ALL</a>
-        </li>
-        {% for category in categories %}
+    <div class="navbar-m">
+        <ul class="nav nav-pills">
             <li class="nav-item">
-                <a class="nav-link {% if page == category.slug %}active{% else %}text-secondary{% endif %}"
-                   href="{% url 'sessions_list' proj=project.slug category=category.slug %}">{{ category.name }}</a>
+                <a class="nav-link text-secondary"
+                   href="{% url 'home' %}"><i class="fas fa-home"></i></a>
             </li>
-        {% endfor %}
-    </ul>
-    <hr class="primary"><br>
+            <li class="nav-item">
+                <a class="nav-link {% if page == 'all' %}active{% else %}text-secondary{% endif %}"
+                   href="{% url 'sessions_list' proj=project.slug category='all' %}">ALL</a>
+            </li>
+            {% for category in categories %}
+                <li class="nav-item">
+                    <a class="nav-link {% if page == category.slug %}active{% else %}text-secondary{% endif %}"
+                       href="{% url 'sessions_list' proj=project.slug category=category.slug %}">{{ category.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <br><br>
 
     <div class="row" xmlns="http://www.w3.org/1999/html">
         <div class="col-lg-12 mx-auto text-center">
-            <h1><a href="{% url 'session_create' proj=project.slug %}"> <i class="fas fa-plus text-secondary"></i></a>
-            </h1>
+            <p class="text-large"><a href="{% url 'session_create' proj=project.slug %}"> <i
+                    class="fas fa-plus text-secondary"></i></a>
+            </p>
         </div>
     </div>
-    <br>
+    <br> <br>
 
     {% for session in sessions %}
         <div class="card mb-3 text-center">

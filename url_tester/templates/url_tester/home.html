@@ -1,21 +1,18 @@
 {% extends 'url_tester/base.html' %}
 {% block content %}
 
-    <h1 class="text-center"><span class="badge badge-info">HOME</span></h1> <br/><br/>
-    <hr class="primary"><br><br>
+    {% include 'url_tester/includes/page_title.html' with title='Home' %}
 
     <div class="flex-row">
         {% for prj in projects %}
-            <a class="flex-card" style="background-color: {{ prj.color }}" href="{% url 'sessions_list' proj=prj.slug category='all' %}">
+            <a class="flex-card" style="background-color: {{ prj.color }}"
+               href="{% url 'sessions_list' proj=prj.slug category='all' %}">
                 <div class=""><p>{{ prj }}</p></div>
             </a>
         {% endfor %}
-        <a class="flex-card-inactive" href="{% url 'project_create'%}">
+        <a class="flex-card-inactive" href="{% url 'project_create' %}">
             <div class=""><i class="fas fa-plus"></i></div>
         </a>
     </div>
-
-
-
-
+    
 {% endblock %}

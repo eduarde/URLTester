@@ -1,5 +1,7 @@
 body {
     background: #f5f5f5;
+
+
     max-width: 1200px;
     margin: 0 auto;
     padding: 10px;
@@ -8,6 +10,20 @@ body {
     text-shadow: 0 0 1px rgba(255, 255, 255, 0.004);
     font-size: 100%;
     font-weight: 400;
+
+}
+
+.page-title {
+    margin-top: 50px;
+    margin-bottom: 150px;
+}
+
+.page-title-m {
+    margin-top: 50px;
+}
+
+.text-large {
+    font-size: 40px;
 }
 
 .action-btns {

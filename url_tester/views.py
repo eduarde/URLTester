@@ -11,7 +11,6 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, get_object_or_404
 import threading
-import time
 
 
 class HomeView(ListView):
@@ -131,7 +130,7 @@ class SessionLoadUrl(CreateView):
         form = self.form_class(instance=self.object)
         return render(request, self.template_name, {'form': form})
 
-    def loadURLS(self, object):
+    def load_urls(self, object):
         file = urlopen(object.url_load)
         data = file.read()
         file.close()
@@ -148,7 +147,7 @@ class SessionLoadUrl(CreateView):
         if form.is_valid():
             self.object.date = timezone.now()
             self.object.save()
-            self.loadURLS(self.object)
+            self.load_urls(self.object)
             return HttpResponseRedirect(self.get_success_url())
 
 
@@ -173,7 +172,7 @@ class RunTests(View):
             except ConnectionError:
                 pass
 
-    def get(self, request, *args, **kwargs):
+    def get(self):
         self.session = self.get_object_session()
         thr = threading.Thread(target=RunTests.run, args=(self.session,))
         thr.start()
