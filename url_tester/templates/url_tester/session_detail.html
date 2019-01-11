@@ -2,7 +2,8 @@
 {% load custom_tags %}
 {% block content %}
 
-    <h2 class="text-center"><span class="badge badge-info">SESSION: {{ session.title }}</span></h2> <br/><br/>
+    <h1 class="text-center"><span class="badge badge-info">SESSION: {{ session.title }}</span></h1><br/><br/>
+    <hr class="primary"><br/><br/>
 
     <div class="card">
         <div class="card-header">
@@ -12,12 +13,24 @@
             <blockquote class="blockquote mb-0">
                 <p>{{ session.description }}</p>
                 <hr class="primary">
-                {% if total_urls %}<button type="button" class="btn btn-default">total <span class="badge badge-info">{{ total_urls }}</span></button>{% endif %}
-                {% if total_200 %}<button type="button" class="btn btn-default">200 <span class="badge badge-success">{{ total_200 }}</span></button>{% endif %}
-                {% if total_301 %}<button type="button" class="btn btn-default">301 <span class="badge badge-warning">{{ total_301 }}</span></button>{% endif %}
-                {% if total_302 %}<button type="button" class="btn btn-default">302 <span class="badge badge-warning">{{ total_302 }}</span></button>{% endif %}
-                {% if total_404 %}<button type="button" class="btn btn-default">404 <span class="badge badge-danger">{{ total_404 }}</span></button>{% endif %}
-                {% if total_500 %}<button type="button" class="btn btn-default">500 <span class="badge badge-danger">{{ total_500 }}</span></button>{% endif %}
+                {% if total_urls %}
+                    <button type="button" class="btn btn-default">total <span
+                            class="badge badge-info">{{ total_urls }}</span></button>{% endif %}
+                {% if total_200 %}
+                    <button type="button" class="btn btn-default">200 <span
+                            class="badge badge-success">{{ total_200 }}</span></button>{% endif %}
+                {% if total_301 %}
+                    <button type="button" class="btn btn-default">301 <span
+                            class="badge badge-warning">{{ total_301 }}</span></button>{% endif %}
+                {% if total_302 %}
+                    <button type="button" class="btn btn-default">302 <span
+                            class="badge badge-warning">{{ total_302 }}</span></button>{% endif %}
+                {% if total_404 %}
+                    <button type="button" class="btn btn-default">404 <span
+                            class="badge badge-danger">{{ total_404 }}</span></button>{% endif %}
+                {% if total_500 %}
+                    <button type="button" class="btn btn-default">500 <span
+                            class="badge badge-danger">{{ total_500 }}</span></button>{% endif %}
                 <footer>
                     <div class="progress">
                         <div class="progress-bar progress-bar-striped bg-{% if session.loaded %}success{% else %}danger{% endif %}"
@@ -33,17 +46,19 @@
 
     <hr class="primary">
 
-    <div class="btn-group" role="group" aria-label="Basic example">
-        <a href="{% url 'sessions_list' %}" class="btn btn-secondary"><i class="fas fa-home"
-                                                                         aria-hidden="true"></i> Home</a>
+
+    <div class="btn-group btn-group-lg" role="group">
+        <a href="{% url 'sessions_list' category=session.category.slug %}" class="btn btn-secondary"><i
+                class="fas fa-home"
+                aria-hidden="true"></i> Home</a>
         <a href="{% url 'session_load' pk=session.pk %}" class="btn btn-secondary"><i class="fas fa-upload"
                                                                                       aria-hidden="true"></i>
-            Load Sitemap</a>
+            Load</a>
 
         {#        <a href="{% url 'session_run' pk=session.pk %}" data-toggle="modal" data-target="#testModal"#}
         {#           class="btn btn-secondary">Run tests</a>#}
 
-        <a href="{% url 'session_run' pk=session.pk %}" class="btn btn-secondary">Run tests</a>
+        <a href="{% url 'session_run' pk=session.pk %}" class="btn btn-secondary"><i class="fas fa-bolt"></i> Tests</a>
     </div>
 
     <br><br>

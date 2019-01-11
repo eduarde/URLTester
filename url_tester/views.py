@@ -3,7 +3,7 @@ import requests
 from urllib.request import urlopen
 from django.views.generic import View, ListView
 from django.views.generic.detail import DetailView
-from .models import Session, URL
+from .models import Session, URL, Category
 from django.views.generic.edit import CreateView, DeleteView
 from .forms import SessionForm, SessionFormDelete, SessionURLForm
 from django.utils import timezone
@@ -19,7 +19,16 @@ class SessionsListView(ListView):
     template_name = 'url_tester/sessions_list.html'
 
     def get_queryset(self):
+        if self.kwargs.get('category') != 'all':
+            category = get_object_or_404(Category, slug=self.kwargs.get('category'))
+            return Session.objects.filter(category=category).order_by('-date')
         return Session.objects.all().order_by('-date')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data()
+        context['categories'] = Category.objects.all()
+        context['page'] = self.kwargs.get('category')
+        return context
 
 
 class SessionDetailView(DetailView):
@@ -66,6 +75,9 @@ class SessionDeleteView(DeleteView):
 
     def get_object(self):
         return get_object_or_404(Session, pk=self.kwargs.get('pk'))
+
+    def get_success_url(self, **kwargs):
+        return reverse('sessions_list', kwargs={'category': self.get_object().category.slug})
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()

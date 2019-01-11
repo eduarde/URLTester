@@ -1,5 +1,18 @@
 from django.db import models
 from django.urls import reverse
+from django.template.defaultfilters import slugify
+
+
+class Category(models.Model):
+    name = models.CharField(verbose_name='Name', max_length=100)
+    slug = models.SlugField(max_length=100, unique=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Category, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
 
 
 class Session(models.Model):
@@ -9,7 +22,7 @@ class Session(models.Model):
     urls = models.ManyToManyField('URL', related_name='session_url')
     url_load = models.URLField(verbose_name='URL to load', blank=True, null=True)
     loaded = models.BooleanField(blank=True, default=False)
-    type = models.CharField(verbose_name='Type', max_length=400, blank=True, null=True)
+    category = models.ForeignKey('Category', related_name='session_category', on_delete=models.SET_NULL, null=True)
 
     def get_absolute_url(self):
         return reverse('session_detail', args=[self.pk])
