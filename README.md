@@ -2,7 +2,15 @@
 URLTester for sitemap
 ----------------------
 
+Load the sitemap of your website and verify if the pages are up and running.
 
+Prerequisite:
+-------------------
+- virtualenv
+- python 3.6.4 
+
+Install
+---------------------
 1. Install libraries
 
     If you are using virtualenv, make sure you are in your environment. 
