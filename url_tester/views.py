@@ -1,7 +1,7 @@
 import xmltodict
 import requests
 from urllib.request import urlopen
-from django.views.generic import View, ListView
+from django.views.generic import View, ListView, TemplateView
 from django.views.generic.detail import DetailView
 from .models import Session, URL, Category, Project
 from django.views.generic.edit import CreateView, DeleteView
@@ -162,17 +162,28 @@ class RunTests(View):
                             kwargs={'proj': self.kwargs.get('proj'), 'slug': self.kwargs.get('session')})
 
     @staticmethod
-    def run(session_obj):
+    def clear_code(session_obj):
         for url in session_obj.urls.all():
+            url.code = ''
+            url.save()
+
+    @staticmethod
+    def run(session_obj):
+
+        RunTests.clear_code(session_obj)
+
+        for url in session_obj.urls.all():
+            status = '?'
             try:
                 r = requests.head(url.link)
-                url.code = r.status_code
-                url.save()
-                session_obj.save()
-            except ConnectionError:
+                status = r.status_code
+            except Exception:
                 pass
+            url.code = status
+            url.save()
+            session_obj.save()
 
-    def get(self):
+    def get(self, request, *args, **kwargs):
         self.session = self.get_object_session()
         thr = threading.Thread(target=RunTests.run, args=(self.session,))
         thr.start()
