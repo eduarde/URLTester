@@ -58,6 +58,7 @@ class SessionDetailView(DetailView):
         context['total_302'] = len([x for x in self.object.urls.all() if x.code == '302'])
         context['total_404'] = len([x for x in self.object.urls.all() if x.code == '404'])
         context['total_500'] = len([x for x in self.object.urls.all() if x.code == '500'])
+        context['total_error'] = len([x for x in self.object.urls.all() if x.code == '?'])
         return context
 
 

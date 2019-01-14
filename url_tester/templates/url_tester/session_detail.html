@@ -35,6 +35,9 @@
                 {% if total_500 %}
                     <button type="button" class="btn btn-default">500 <span
                             class="badge badge-danger">{{ total_500 }}</span></button>{% endif %}
+                {% if total_error %}
+                    <button type="button" class="btn btn-default">? <span
+                            class="badge badge-secondary">{{ total_error }}</span></button>{% endif %}
                 <footer>
                     <div class="progress">
                         <div class="progress-bar progress-bar-striped bg-success"
