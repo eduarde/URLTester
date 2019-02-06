@@ -1,7 +1,9 @@
 {% extends 'url_tester/base.html' %}
 {% block content %}
 
-    {% include 'url_tester/includes/page_title.html' with title='Home' %}
+    <header>
+        {% include 'url_tester/includes/page_title.html' with title='Home' %}
+    </header>
 
     <div class="flex-row">
         {% for prj in projects %}

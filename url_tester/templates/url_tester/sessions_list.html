@@ -1,7 +1,9 @@
 {% extends 'url_tester/base.html' %}
 {% block content %}
 
-    {% include 'url_tester/includes/page_title.html' with title=project %}
+    <header>
+        {% include 'url_tester/includes/page_title.html' with title=project %}
+
 
     <div class="navbar-m">
         <ul class="nav nav-pills">
@@ -21,7 +23,9 @@
             {% endfor %}
         </ul>
     </div>
-    <br><br>
+    </header>
+        <br><br>
+
 
     <div class="row" xmlns="http://www.w3.org/1999/html">
         <div class="col-lg-12 mx-auto text-center">
@@ -49,7 +53,7 @@
                 </div>
             </div>
             <div class="card-footer text-muted">
-                <small class="float-left">{{ session.date }}</small>
+                <small><time class="float-left" datetime="{{ session.date }}">{{ session.date }}</time></small>
                 <span class="float-right"><a href="{% url 'session_delete' proj=project.slug session=session.slug %}"
                                              class="cardbtn-item"><i
                         class="fa fa-trash"></i></a></span>
